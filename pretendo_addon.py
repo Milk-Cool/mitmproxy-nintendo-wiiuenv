@@ -16,19 +16,19 @@ CERT = None
 
 class PretendoAddon:
     def running(_self):
-        ctx.log.info("Building Inkay...")
+        if not os.path.isdir("wiiuenv/"):
+            os.mkdir("wiiuenv")
+        ctx.log.info("Copying cert...")
+
         certf = open(expanduser("~/.mitmproxy/mitmproxy-ca-cert.pem"), "r")
         cert = certf.read()
         certf.close()
 
-        inkaycertf = open(os.path.join(os.getcwd(), "Inkay", "data", "ca.pem"), "w")
-        inkaycertf.write(cert)
-        inkaycertf.close()
+        outf = open("wiiuenv/ca.pem", "w")
+        outf.write(cert)
+        outf.close()
 
-        os.system("docker build Inkay -t inkay-build")
-        os.system(f"docker run -it --rm -v {os.path.join(os.getcwd(), "Inkay")}:/app -w /app inkay-build")
-
-        ctx.log.info("Built Inkay! Built module can be found at Inkay/Inkay-pretendo.wps")
+        ctx.log.info("Copied the cert!")
     
     def load(self, loader) -> None:
         loader.add_option(
@@ -116,7 +116,7 @@ class PretendoAddon:
         global REGION_ID, COUNTRY_NAME, LANGUAGE
         global CERT, USERNAME, PASSWORD
 
-        env = open("wiiu.env", "w")
+        env = open("wiiuenv/wiiu.env", "w")
         env.write(f"""DEVICE_ID={DEVICE_ID}
 SERIAL_NUMBER={SERIAL_NUMBER}
 SYSTEM_VERSION={SYSTEM_VERSION}
@@ -128,7 +128,7 @@ USERNAME={USERNAME}
 PASSWORD={PASSWORD}""")
         env.close()
 
-        envwin = open("wiiu.env", "w")
+        envwin = open("wiiuenv/wiiu.env.bat", "w")
         envwin.write(f"""set DEVICE_ID={DEVICE_ID}
 set SERIAL_NUMBER={SERIAL_NUMBER}
 set SYSTEM_VERSION={SYSTEM_VERSION}
@@ -140,7 +140,7 @@ set USERNAME={USERNAME}
 set PASSWORD={PASSWORD}""")
         envwin.close()
 
-        envlinux = open("wiiu.env", "w")
+        envlinux = open("wiiuenv/wiiu.env.sh", "w")
         envlinux.write(f"""export DEVICE_ID={DEVICE_ID}
 export SERIAL_NUMBER={SERIAL_NUMBER}
 export SYSTEM_VERSION={SYSTEM_VERSION}

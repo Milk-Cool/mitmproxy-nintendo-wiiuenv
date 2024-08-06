@@ -1,3 +1,11 @@
+# FORK INFO
+This fork is for grabbing Wii U credentials.\
+If someone wants you to share the results with them, DON'T! This can be dangerous.
+```sh
+docker build -t wiiuenv .
+docker run -it --rm -p 8080:8080 -v ./wiiuenv:/home/mitmproxy/wiiuenv wiiuenv mitmdump
+```
+
 # Mitmproxy configuration for Pretendo
 
 This repo contains configurations, scripts, and certificates for using
